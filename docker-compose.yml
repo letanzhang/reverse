@@ -12,6 +12,7 @@ services:
       - app-network
 
   backend:
+    image: letanzhang/backend-app:latest
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -27,6 +28,7 @@ services:
       - app-network
 
   frontend:
+    image: letanzhang/frontend-app:latest
     build:
       context: ./frontend
       dockerfile: Dockerfile
