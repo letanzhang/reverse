@@ -3,49 +3,35 @@ name: CI/CD for Main Branch
 on:
   push:
     branches:
-      - main
+      - dev
 
 jobs:
   build-test-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 检出代码
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 设置 Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      # 安装后端依赖并测试
       - name: Install and Test Backend
         run: |
           cd backend
           npm install
           npm test
 
-      # 安装前端依赖并测试
       - name: Install and Test Frontend
         run: |
           cd frontend
           npm install
           npm test
 
-      # 登录到 Docker Hub
-      - name: Login to Docker Hub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-
-      # 安装 Docker Compose
-      - name: Install Docker Compose
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y docker-compose
-
-      # 构建和推送 Docker 镜像
-      - name: Build and Push Docker Images
-        run: |
-          docker-compose build
-          docker-compose push
+      - name: Merge to Main
+        uses: devcinci/merge-branch@v2.0.1
+        with:
+          target_branch: main
+          github_token: ${{ secrets.GITHUB_TOKEN }}
